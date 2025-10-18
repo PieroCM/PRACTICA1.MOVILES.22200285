@@ -1,14 +1,17 @@
 package com.example.practica1moviles.presentation.home
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.practica1moviles.ui.theme.GradientBackground
 
 @Composable
 fun HomeScreen(
@@ -16,10 +19,7 @@ fun HomeScreen(
     onNavigateToPhysicalActivity: () -> Unit = {},
     onNavigateToSportsCatalog: () -> Unit = {}
 ) {
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
+    GradientBackground {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -30,9 +30,8 @@ fun HomeScreen(
             // Título de la aplicación
             Text(
                 text = "Menú Principal",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
 
@@ -43,55 +42,55 @@ fun HomeScreen(
                 onClick = onNavigateToWaterCalculator,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp),
+                    .height(56.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 )
             ) {
                 Text(
                     text = "💧 Calculadora de Consumo de Agua",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
+                    style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Botón 2: Registro de actividad física
             Button(
                 onClick = onNavigateToPhysicalActivity,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp),
+                    .height(56.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
+                    containerColor = MaterialTheme.colorScheme.primary
                 )
             ) {
                 Text(
                     text = "🏃 Registro de Actividad Física",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
+                    style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Botón 3: Catálogo de autos deportivos
             Button(
                 onClick = onNavigateToSportsCatalog,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp),
+                    .height(56.dp),
+                shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiary
+                    containerColor = MaterialTheme.colorScheme.primary
                 )
             ) {
                 Text(
                     text = "🏎️ Catálogo de Autos Deportivos",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
+                    style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center
                 )
             }

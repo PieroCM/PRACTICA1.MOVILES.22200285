@@ -1,5 +1,7 @@
 package com.example.practica1moviles.presentation.sportscars
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -10,16 +12,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.practica1moviles.ui.theme.GradientBackground
+import com.example.practica1moviles.ui.theme.PlaceholderDark
 import java.text.NumberFormat
 import java.util.Locale
 
-// Data class para representar un auto deportivo
 data class Auto(
     val marca: String,
     val modelo: String,
@@ -32,7 +37,6 @@ data class Auto(
 fun SportsCarsScreen(
     onNavigateBack: () -> Unit = {}
 ) {
-    // Mock data - Lista de autos deportivos
     val autos = listOf(
         Auto(
             marca = "Mitsubishi",
@@ -66,40 +70,49 @@ fun SportsCarsScreen(
         )
     )
 
-    // Calcular el total de todos los autos
     val total = autos.sumOf { it.precioUsd }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Catálogo de Autos Deportivos") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onTertiaryContainer
+    GradientBackground {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = {
+                        Text(
+                            "Catálogo de Autos Deportivos",
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = onNavigateBack) {
+                            Icon(
+                                Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Volver",
+                                tint = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = MaterialTheme.colorScheme.onBackground
+                    )
                 )
-            )
-        }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Renderizar cada auto en una Card
-            items(autos) { auto ->
-                AutoCard(auto = auto)
-            }
+            },
+            containerColor = Color.Transparent
+        ) { paddingValues ->
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                items(autos) { auto ->
+                    AutoCard(auto = auto)
+                }
 
-            // Mostrar el total al final
-            item {
-                TotalCard(total = total)
+                item {
+                    TotalCard(total = total)
+                }
             }
         }
     }
@@ -109,56 +122,59 @@ fun SportsCarsScreen(
 fun AutoCard(auto: Auto) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Imagen del auto
-            AsyncImage(
-                model = auto.imageUrl,
-                contentDescription = "Foto de ${auto.marca} ${auto.modelo}",
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(16f / 9f),
-                contentScale = ContentScale.Crop,
-                placeholder = null,
-                error = null
-            )
+                    .aspectRatio(16f / 9f)
+                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                    .background(PlaceholderDark)
+            ) {
+                AsyncImage(
+                    model = auto.imageUrl,
+                    contentDescription = "Foto de ${auto.marca} ${auto.modelo}",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
 
-            // Información del auto
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                // Título: Marca + Modelo
                 Text(
                     text = "${auto.marca} ${auto.modelo}",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
-                // Marca como subtítulo
                 Text(
                     text = auto.marca.uppercase(),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
+                    style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     letterSpacing = 1.sp
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Precio formateado en USD
                 val formatter = NumberFormat.getCurrencyInstance(Locale.US)
                 Text(
                     text = formatter.format(auto.precioUsd),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold
+                    ),
                     color = MaterialTheme.colorScheme.primary
                 )
             }
@@ -170,31 +186,33 @@ fun AutoCard(auto: Auto) {
 fun TotalCard(total: Double) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Text(
                 text = "💰 Costo total de los autos:",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             val formatter = NumberFormat.getCurrencyInstance(Locale.US)
             Text(
                 text = formatter.format(total),
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
